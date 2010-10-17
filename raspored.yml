@@ -1,0 +1,43 @@
+2009_a: #2.a
+  pon:
+    1: pov, 5
+    2: geo, 10
+    3: kem
+    4: et, 9
+    5: eng, 8
+    6: tzk
+    7: bio
+  uto:
+    1: sro, 6
+    2: mat, 7
+    3: mat, 7
+    4: lat, 8
+    5: lik, 9
+    6: fiz, 6
+    7: eng, 8
+  sri:
+    1: pov, 1
+    2: hj, 6
+    3: kem
+    4: gk, 5
+    5: fiz
+    6: inf
+    7: inf2
+  cet:
+    1: inf2
+    2: inf
+    3: hj, 2
+    4: lat, 8
+    5: mat, 7
+    6: mat, 7
+    7: fiz
+  pet:
+    1: geo, 10
+    2: hj, 6
+    3: hj, 6
+    4: eng, 4
+    5: bio
+    6: tzk
+    7: 
+  conf:
+    druga: obrnuta
