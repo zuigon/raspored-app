@@ -1,8 +1,13 @@
 require "rubygems"
 require "sinatra"
 require "yaml"
+require "gcal-lib"
 
 POC_DATUM = ["6.9.2010", 0]
+CAL_URL = "file://./basic.ics"
+#http://www.google.com/calendar/ical/81d23ab0r2mcll612eeqlgtd90@group.calendar.google.com/public/basic.ics
+
+# prvi_dan_tjedna(dan): x=(dan); x.strftime("%d.%m.%Y ")+(x-x.strftime("%w").to_i).strftime("%d.%m.%Y")
 
 def wrap_text(txt, col = 80)
   txt.gsub(/(.{1,#{col}})( +|$\n?)|(.{1,#{col}})/, "\\1\\3\n") 
@@ -30,7 +35,7 @@ def boja(s, i, p="")
   return "empty" if p =~ /--/
   return "wgray" if p =~ /SRO/
   return "wgray" if p =~ /TZK/
-  return "blue" if p =~ /INF/
+  return "blue"  if p =~ /INF/
   ""
 end
 
@@ -77,16 +82,30 @@ __END__
   %h2 Popodnevna smjena
 
 %table{:border=>1, :style=>"text-align: center;"}
+  - @dani = %w(pon uto sri cet pet sub ned)
+  - g = CalendarReader::Calendar.new(CAL_URL)
   %tr
     %th{:width=>20} &nbsp;
-    - for s in %w(Pon Uto Sri Cet Pet)
-      %th{:width=>75, :class=>"gray"}= s
+    - for s in @dani[0..4].map{|x| x.capitalize}
+      %th{:width=>80, :class=>"gray#{(@dani[(((DateTime.now).strftime "%w").to_i-1)%7] == s.downcase) ? " uline" : ""}"}= "#{s}"
+  %tr
+    %th{} &nbsp;
+    - for i in 1..5
+      %th= "#{(DateTime.now+i).strftime "%d.%m."}"
+  %tr
+    %th{} GC.
+    - prvi_dan_tj = (x=DateTime.now; (x-x.strftime("%w").to_i))
+    - for i in 1..5
+      %th{:valign=>"top", :class=>"events_l"}
+        = (g.past_events + g.future_events).collect{|x| x.summary if (x.start_time.strftime("%d.%m.%Y")==(prvi_dan_tj+i).strftime("%d.%m.%Y")) }.compact.join "<br>"
+
   - for i in 0..8
     %tr
       %td{:class=>"gray"}= "#{i}."
       - for s in %w(pon uto sri cet pet)
         - idx = (smjena(DateTime.now)==0) ? i : 8-i
         %td{:class=>boja(s, i, @ras[s][idx])}= (@ras[s][idx] =~ /\, /) ? "#{@ras[s][idx].gsub(/\, /, ' (')})" : @ras[s][idx] if !@ras[s][idx].nil?
+
 
 @@layout
 !!! Transitional

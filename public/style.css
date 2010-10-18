@@ -2,3 +2,5 @@
 .gray { background-color: lightgray; }
 .wgray { background-color: #eee; }
 .blue { background-color: lightblue; }
+.uline { text-decoration: underline; }
+.events_l { line-height: 1.2em; }
