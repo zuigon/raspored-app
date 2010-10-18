@@ -20,7 +20,7 @@ def razredi(r=options.r) # in: r; out: razredi
 end
 
 def raz(str) # in: razred_string; out: formatirani raz., npr.: {in: 2009_a; out: 2.a}
-  d = DateTime.strptime("#{str[/\d+_/].collect{|g| g.to_i}.first}/09", "%Y/%m")
+  d = DateTime.strptime("#{str[/\d+_/].to_i}/09", "%Y/%m")
   return false if d>DateTime.now
   "#{(1+((DateTime.now-d)/365).to_i)}.#{str[/_(.+)$/, 1]}"
 end
@@ -86,7 +86,7 @@ __END__
       %td{:class=>"gray"}= "#{i}."
       - for s in %w(pon uto sri cet pet)
         - idx = (smjena(DateTime.now)==0) ? i : 8-i
-        %td{:class=>boja(s, i, @ras[s][idx])}= @ras[s][idx].collect{|h| h="#{h.gsub(/\, /, ' (')})" if h =~ /\, /; h} if !@ras[s][idx].nil?
+        %td{:class=>boja(s, i, @ras[s][idx])}= (@ras[s][idx] =~ /\, /) ? "#{@ras[s][idx].gsub(/\, /, ' (')})" : @ras[s][idx] if !@ras[s][idx].nil?
 
 @@layout
 !!! Transitional
