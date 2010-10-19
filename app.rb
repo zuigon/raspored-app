@@ -109,10 +109,7 @@ __END__
 @@razred
 %h1= "Razred: #{raz @str}"
 
-- if (smjena DateTime.now) == 0
-  %h2 Jutarnja smjena
-- elsif (smjena DateTime.now )== 1
-  %h2 Popodnevna smjena
+%h2= "#{(smjena DateTime.now)==0 ? "Prva" : "Druga"} smjena (#{(prvi_dan_tj+1).strftime "%d.%m."} - #{(prvi_dan_tj+5).strftime "%d.%m."})"
 
 %table{:border=>2, :id=>"tbl_ras"}
   - @dani = %w(pon uto sri cet pet sub ned)
