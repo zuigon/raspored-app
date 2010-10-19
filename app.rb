@@ -98,11 +98,11 @@ __END__
 @@razredi
 %h2 Svi razredi:
 %ul
-  - for r in razredi
+  - for r in razredi.sort
     %li
       %a{:href=>"/raz/#{r}"}= "#{raz r} (#{r})"
 
-@@root
+@@test
 %pre= wrap_text(razredi(@r).inspect)
 %h1 Raspored
 
@@ -121,7 +121,7 @@ __END__
     / @dani
     %th{:width=>20} &nbsp;
     - for s in @dani.first(5).map{|x| x.capitalize}
-      %th{:width=>80, :class=>"gray#{(@dani[(((DateTime.now).strftime "%w").to_i+6)%7] == s.downcase) ? " uline" : ""}"}= "#{s}"
+      %th{:width=>80, :class=>"gray#{(@dani[(DateTime.now.strftime("%w").to_i+6)%7] == s.downcase) ? " uline" : ""}"}= "#{s}"
   %tr
     / datumi
     %th &nbsp;
@@ -136,7 +136,6 @@ __END__
           - for x in ((g.past_events+g.future_events).collect{|x| [x.summary, x.description] if (x.start_time.strftime("%d.%m.%Y")==(prvi_dan_tj+i).strftime("%d.%m.%Y"))}.compact)
             - hd = (!x[1].nil? && !x[1].empty?)
             %li{:class=>"gcal_event_li#{hd ? " hasdesc" : ""}", :title=>(hd ? x[1].split("\n").join("; ") : nil)}= "#{hd ? "+" : "-"} #{x.first}"
-
   - for i in 0..8
     %tr
       %td{:class=>"gray"}= "#{i}."
