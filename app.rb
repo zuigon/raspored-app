@@ -8,7 +8,9 @@ CAL_URL = "file://./basic.ics"
 #http://www.google.com/calendar/ical/81d23ab0r2mcll612eeqlgtd90@group.calendar.google.com/public/basic.ics
 
 # prvi_dan_tjedna(dan): x=(dan); x.strftime("%d.%m.%Y ")+(x-x.strftime("%w").to_i).strftime("%d.%m.%Y")
-
+def prvi_dan_tj
+  DateTime.now - DateTime.now.strftime("%w").to_i
+end
 def wrap_text(txt, col = 80)
   txt.gsub(/(.{1,#{col}})( +|$\n?)|(.{1,#{col}})/, "\\1\\3\n") 
 end
@@ -91,13 +93,12 @@ __END__
   %tr
     %th{} &nbsp;
     - for i in 1..5
-      %th= "#{(DateTime.now+i).strftime "%d.%m."}"
+      %th= "#{(prvi_dan_tj+i).strftime "%d.%m."}"
   %tr
     %th{} GC.
-    - prvi_dan_tj = (x=DateTime.now; (x-x.strftime("%w").to_i))
     - for i in 1..5
       %th{:valign=>"top", :class=>"events_l"}
-        = (g.past_events + g.future_events).collect{|x| x.summary if (x.start_time.strftime("%d.%m.%Y")==(prvi_dan_tj+i).strftime("%d.%m.%Y")) }.compact.join "<br>"
+        = (g.past_events+g.future_events).collect{|x| "- #{x.summary}" if (x.start_time.strftime("%d.%m.%Y")==(prvi_dan_tj+i).strftime("%d.%m.%Y"))}.compact.join "<br>"
 
   - for i in 0..8
     %tr
