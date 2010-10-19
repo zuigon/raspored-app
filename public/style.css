@@ -1,6 +1,12 @@
+#tbl_ras { text-align: center; border-collapse: collapse; }
 .empty { color: lightgray; }
 .gray { background-color: lightgray; }
 .wgray { background-color: #eee; }
 .blue { background-color: lightblue; }
 .uline { text-decoration: underline; }
 .events_l { line-height: 1.2em; }
+.gcal_event { list-style: none; }
+.hasdesc { color: blue; }
+.right { text-align: right; }
+ul { margin: 0 auto; list-style-type: none; padding: 0; }
+tr td .sati { margin-right: 20px; }
