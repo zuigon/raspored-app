@@ -63,6 +63,31 @@ get '/raz/:str' do |str|
   haml :razred
 end
 
+get '/raz/:str/prijedlog' do |str|
+  error 404 if ! str =~ /^\d\d\d\d_\d+$/
+  @str = str
+  @title = "Prijedlog novog eventa"
+
+  haml :prijedlog
+end
+
+post '/raz/:str/prijedlog' do |str|
+  error 404 if ! str =~ /^\d\d\d\d_\d+$/
+  datum, naziv, opis = params[:date], params[:naziv], params[:opis]
+  open('prijedlozi.txt', 'a'){ |f|
+    f.puts "======================"
+    f.puts "Vrijeme: #{Time.now.strftime "%d.%m.%Y %H:%M"}"
+    f.puts "Remote addr.: #{@env['REMOTE_ADDR']}"
+    f.puts "@ RAZRED: #{str} (#{raz str})"
+    f.puts "@ Datum: #{datum}"
+    f.puts "@ Naziv: #{naziv}"
+    f.puts "@ Opis:  #{opis.inspect}"
+    f.puts "======================"
+  }
+  redirect "/raz/#{str}"
+end
+
+
 get '/rr' do
   out = `./get-cal.sh`
   "<pre>#{out}</pre>"
@@ -119,13 +144,39 @@ __END__
         - idx = (smjena(DateTime.now)==0) ? i : 8-i
         %td{:class=>boja(s, i, @ras[s][idx])}= (@ras[s][idx] =~ /\, /) ? "#{@ras[s][idx].gsub(/\, /, ' (')})" : @ras[s][idx] if !@ras[s][idx].nil?
 
+%p
+  %a{:href=>"/raz/#{@str}/prijedlog"} Prijedlog novog eventa
+  &nbsp; | &nbsp;
+  %a{:href=>"/"} Svi razredi
+%p
+  %a{:href=>"http://github.com/bkrsta/raspored-app"} Source
+
+@@prijedlog
+%h1= @title
+%form{:action=>"/raz/#{@str}/prijedlog", :method=>"post"}
+  %p
+    %label{:for=>"date"} Datum
+    %br
+    %input{:type=>"text", :name=>"date", :size=>12}
+    %span.help D.M.GGGG.
+  %p
+    %label{:for=>"naziv"} Naziv
+    %br
+    %input{:type=>"text", :name=>"naziv"}
+    %span.help npr.: HJ test
+  %p
+    %label{:for=>"opis"} Opis
+    %br
+    %textarea{:name=>"opis", :rows=>5, :cols=>30}
+  %p
+    %input{:type=>"submit", :value=>"Salji"}
 
 @@layout
 !!! Transitional
 %html{:xmlns => "http://www.w3.org/1999/xhtml"}
   %head
     %meta{:content => "text/html; charset=iso-8859-1", "http-equiv" => "Content-Type"}/
-    %title= "Raspored#{@t_nast}"
+    %title= (@title || "Raspored#{@t_nast}")
     %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css"}/
     / %script{:src => "http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js", :type => "text/javascript"}
     / %script{:src => "http://plugins.jquery.com/files/jquery.cookie.js.txt", :type => "text/javascript"}
