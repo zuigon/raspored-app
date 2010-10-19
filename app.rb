@@ -109,7 +109,8 @@ __END__
       %th{:valign=>"top", :class=>"events_l"}
         %ul
           - for x in ((g.past_events+g.future_events).collect{|x| [x.summary, x.description] if (x.start_time.strftime("%d.%m.%Y")==(prvi_dan_tj+i).strftime("%d.%m.%Y"))}.compact)
-            %li{:class=>"gcal_event_li#{!x[1].nil? && !x[1].empty? ? " hasdesc" : ""}", :title=>(!x[1].nil? && !x[1].empty? ? x[1] : nil)}= "- #{x.first}"
+            - hd = (!x[1].nil? && !x[1].empty?)
+            %li{:class=>"gcal_event_li#{hd ? " hasdesc" : ""}", :title=>(hd ? x[1].split("\n").join("; ") : nil)}= "#{hd ? "+" : "-"} #{x.first}"
 
   - for i in 0..8
     %tr
