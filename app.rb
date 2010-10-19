@@ -63,6 +63,11 @@ get '/raz/:str' do |str|
   haml :razred
 end
 
+get '/rr' do
+  out = `./get-cal.sh`
+  "<pre>#{out}</pre>"
+end
+
 __END__
 
 @@razredi
