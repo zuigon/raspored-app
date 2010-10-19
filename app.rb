@@ -11,6 +11,7 @@ CAL_URL = "file://./basic.ics"
 def prvi_dan_tj
   DateTime.now - DateTime.now.strftime("%w").to_i
 end
+
 def wrap_text(txt, col = 80)
   txt.gsub(/(.{1,#{col}})( +|$\n?)|(.{1,#{col}})/, "\\1\\3\n") 
 end
@@ -38,7 +39,7 @@ def boja(s, i, p="")
   return "wgray" if p =~ /SRO/
   return "wgray" if p =~ /TZK/
   return "blue"  if p =~ /INF/
-  ""
+  nil
 end
 
 configure do
@@ -83,27 +84,32 @@ __END__
 - elsif (smjena DateTime.now )== 1
   %h2 Popodnevna smjena
 
-%table{:border=>1, :style=>"text-align: center;"}
+%table{:border=>2, :id=>"tbl_ras"}
   - @dani = %w(pon uto sri cet pet sub ned)
   - g = CalendarReader::Calendar.new(CAL_URL)
   %tr
+    / @dani
     %th{:width=>20} &nbsp;
-    - for s in @dani[0..4].map{|x| x.capitalize}
-      %th{:width=>80, :class=>"gray#{(@dani[(((DateTime.now).strftime "%w").to_i-1)%7] == s.downcase) ? " uline" : ""}"}= "#{s}"
+    - for s in @dani.first(5).map{|x| x.capitalize}
+      %th{:width=>80, :class=>"gray#{(@dani[(((DateTime.now).strftime "%w").to_i+6)%7] == s.downcase) ? " uline" : ""}"}= "#{s}"
   %tr
-    %th{} &nbsp;
+    / datumi
+    %th &nbsp;
     - for i in 1..5
       %th= "#{(prvi_dan_tj+i).strftime "%d.%m."}"
   %tr
-    %th{} GC.
+    / GCal eventi
+    %th Kal.
     - for i in 1..5
       %th{:valign=>"top", :class=>"events_l"}
-        = (g.past_events+g.future_events).collect{|x| "- #{x.summary}" if (x.start_time.strftime("%d.%m.%Y")==(prvi_dan_tj+i).strftime("%d.%m.%Y"))}.compact.join "<br>"
+        %ul
+          - for x in ((g.past_events+g.future_events).collect{|x| [x.summary, x.description] if (x.start_time.strftime("%d.%m.%Y")==(prvi_dan_tj+i).strftime("%d.%m.%Y"))}.compact)
+            %li{:class=>"gcal_event_li#{!x[1].nil? && !x[1].empty? ? " hasdesc" : ""}", :title=>(!x[1].nil? && !x[1].empty? ? x[1] : nil)}= "- #{x.first}"
 
   - for i in 0..8
     %tr
       %td{:class=>"gray"}= "#{i}."
-      - for s in %w(pon uto sri cet pet)
+      - for s in @dani.first(5)
         - idx = (smjena(DateTime.now)==0) ? i : 8-i
         %td{:class=>boja(s, i, @ras[s][idx])}= (@ras[s][idx] =~ /\, /) ? "#{@ras[s][idx].gsub(/\, /, ' (')})" : @ras[s][idx] if !@ras[s][idx].nil?
 
