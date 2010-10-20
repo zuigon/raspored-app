@@ -55,9 +55,11 @@ get '/raz/:str' do |str|
   @t_nast = ": #{raz str}"
   @str = str
   @r = options.r[str] rescue nil
-  @ras = {}
+  @ras, @rasNext = {}, {}
   %w(pon uto sri cet pet).each {|s|
     @ras[s] = @r[s].sort{|a,b| (smjena(DateTime.now)==0) ? (b[0]<=>a[0]) : (a[0]<=>b[0]) }.
+    inject({}){|h, (k, v)| h[k]=(v.nil?) ? "--" : v.upcase; h}
+    @rasNext[s] = @r[s].sort{|a,b| (smjena(DateTime.now)!=0) ? (b[0]<=>a[0]) : (a[0]<=>b[0]) }.
     inject({}){|h, (k, v)| h[k]=(v.nil?) ? "--" : v.upcase; h}
   }
   haml :razred
@@ -109,7 +111,7 @@ __END__
 @@razred
 %h1= "Razred: #{raz @str}"
 
-%h2= "#{(smjena DateTime.now)==0 ? "Prva" : "Druga"} smjena (#{(prvi_dan_tj+1).strftime "%d.%m."} - #{(prvi_dan_tj+5).strftime "%d.%m."})"
+%h2= "Ovaj tjedan - #{(smjena DateTime.now)==0 ? "Prva" : "Druga"} smjena (#{(prvi_dan_tj+1).strftime "%d.%m."} - #{(prvi_dan_tj+5).strftime "%d.%m."})"
 
 %table{:border=>2, :id=>"tbl_ras"}
   - @dani = %w(pon uto sri cet pet sub ned)
@@ -139,6 +141,37 @@ __END__
       - for s in @dani.first(5)
         - idx = (smjena(DateTime.now)==0) ? i : 8-i
         %td{:class=>boja(s, i, @ras[s][idx])}= (@ras[s][idx] =~ /\, /) ? "#{@ras[s][idx].gsub(/\, /, ' (')})" : @ras[s][idx] if !@ras[s][idx].nil?
+
+%h2= "Slijedeci tjedan - #{(smjena DateTime.now+7)==0 ? "Prva" : "Druga"} smjena (#{(prvi_dan_tj+8).strftime "%d.%m."} - #{(prvi_dan_tj+12).strftime "%d.%m."})"
+
+%table{:border=>2, :id=>"tbl_ras"}
+  - @dani = %w(pon uto sri cet pet sub ned)
+  - g = CalendarReader::Calendar.new(CAL_URL)
+  %tr
+    / @dani
+    %th{:width=>20} &nbsp;
+    - for s in @dani.first(5).map{|x| x.capitalize}
+      %th{:width=>80, :class=>"gray"}= "#{s}"
+  %tr
+    / datumi
+    %th &nbsp;
+    - for i in 1..5
+      %th= "#{(prvi_dan_tj+i+7).strftime "%d.%m."}"
+  %tr
+    / GCal eventi
+    %th Kal.
+    - for i in 1..5
+      %th{:valign=>"top", :class=>"events_l"}
+        %ul
+          - for x in ((g.past_events+g.future_events).collect{|x| [x.summary, x.description] if (x.start_time.strftime("%d.%m.%Y")==(prvi_dan_tj+i+7).strftime("%d.%m.%Y"))}.compact)
+            - hd = (!x[1].nil? && !x[1].empty?)
+            %li{:class=>"gcal_event_li#{hd ? " hasdesc" : ""}", :title=>(hd ? x[1].split("\n").join("; ") : nil)}= "#{hd ? "+" : "-"} #{x.first}"
+  - for i in 0..8
+    %tr
+      %td{:class=>"gray"}= "#{i}."
+      - for s in @dani.first(5)
+        - idx = (smjena(DateTime.now+7)==0) ? i : 8-i
+        %td{:class=>boja(s, i, @rasNext[s][idx])}= (@rasNext[s][idx] =~ /\, /) ? "#{@rasNext[s][idx].gsub(/\, /, ' (')})" : @rasNext[s][idx] if !@rasNext[s][idx].nil?
 
 %p
   %a{:href=>"/raz/#{@str}/prijedlog"} Prijedlog novog eventa
