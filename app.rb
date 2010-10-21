@@ -2,6 +2,8 @@ require "rubygems"
 require "sinatra"
 require "yaml"
 require "gcal-lib"
+require "sati-lib"
+require "time"
 
 POC_DATUM = ["6.9.2010", 0]
 CAL_URL = "file://./basic.ics"
@@ -140,7 +142,9 @@ __END__
       %td{:class=>"gray"}= "#{i}."
       - for s in @dani.first(5)
         - idx = (smjena(DateTime.now)==0) ? i : 8-i
-        %td{:class=>boja(s, i, @ras[s][idx])}= (@ras[s][idx] =~ /\, /) ? "#{@ras[s][idx].gsub(/\, /, ' (')})" : @ras[s][idx] if !@ras[s][idx].nil?
+        - t = (koji_sat?(Time.now) || [0, 0])
+        - sada=nil; sada = (t[1] rescue nil) if @dani[(DateTime.now.strftime("%w").to_i-1)%7] == s && t[0]==(smjena(DateTime.now)+1)
+        %td{:class=>"#{"tek_sat " if sada==i}#{boja(s, i, @ras[s][idx])}#{(@dani[(DateTime.now.strftime("%w").to_i-1)%7] == s) ? " danas" : ""}"}= (@ras[s][idx] =~ /\, /) ? "#{@ras[s][idx].gsub(/\, /, ' (')})" : @ras[s][idx] if !@ras[s][idx].nil?
 
 %h2= "Slijedeci tjedan - #{(smjena DateTime.now+7)==0 ? "Prva" : "Druga"} smjena (#{(prvi_dan_tj+8).strftime "%d.%m."} - #{(prvi_dan_tj+12).strftime "%d.%m."})"
 
@@ -171,7 +175,8 @@ __END__
       %td{:class=>"gray"}= "#{i}."
       - for s in @dani.first(5)
         - idx = (smjena(DateTime.now+7)==0) ? i : 8-i
-        %td{:class=>boja(s, i, @rasNext[s][idx])}= (@rasNext[s][idx] =~ /\, /) ? "#{@rasNext[s][idx].gsub(/\, /, ' (')})" : @rasNext[s][idx] if !@rasNext[s][idx].nil?
+        - x = @rasNext[s][idx]
+        %td{:class=>"#{boja(s, i, x)}"}= (x =~ /\, /) ? "#{x.gsub(/\, /, ' (')})" : x if !x.nil?
 
 %p
   %a{:href=>"/raz/#{@str}/prijedlog"} Prijedlog novog eventa

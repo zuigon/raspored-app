@@ -11,3 +11,5 @@
 ul { margin: 0 auto; list-style-type: none; padding: 0; }
 tr td .sati { margin-right: 20px; }
 .help { color: gray; text-decoration: italic; margin-left: 5px; }
+.danas { background-color: lightblue; }
+.tek_sat { color: red; }
