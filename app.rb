@@ -9,6 +9,10 @@ POC_DATUM = ["6.9.2010", 0]
 CAL_URL = "file://./basic.ics"
 #http://www.google.com/calendar/ical/81d23ab0r2mcll612eeqlgtd90@group.calendar.google.com/public/basic.ics
 
+def load_cal
+  (YAML.load File.read 'raspored.yml')
+end
+
 # prvi_dan_tjedna(dan): x=(dan); x.strftime("%d.%m.%Y ")+(x-x.strftime("%w").to_i).strftime("%d.%m.%Y")
 def prvi_dan_tj
   DateTime.now - DateTime.now.strftime("%w").to_i
@@ -40,12 +44,12 @@ def boja(s, i, p="")
   return "empty" if p =~ /--/
   return "wgray" if p =~ /SRO/
   return "wgray" if p =~ /TZK/
-  return "blue"  if p =~ /INF/
+  # return "blue"  if p =~ /INF/
   nil
 end
 
 configure do
-  set :r, (YAML.load File.read 'raspored.yml')
+  set :r, load_cal()
 end
 
 get '/' do
@@ -54,6 +58,7 @@ get '/' do
 end
 
 get '/raz/:str' do |str|
+  options.r = load_cal() if options.r.nil? # ako ga GC pojede
   @t_nast = ": #{raz str}"
   @str = str
   @r = options.r[str] rescue nil
