@@ -53,7 +53,7 @@ def smjena(datum) # in: <Time>; out: 0 ili 1 (jut. ili pod.)
 end
 
 def razredi(r=options.r) # in: r; out: razredi
-  r.collect{|t| t if t.string?}.compact
+  r.first.collect{|t| t if t.string?}.compact
 end
 
 def raz(str) # in: razred_string; out: formatirani raz., npr.: {in: 2009_a; out: 2.a}
@@ -161,10 +161,8 @@ __END__
 
 %table{:border=>2, :id=>"tbl_ras"}
   - @dani = %w(pon uto sri cet pet sub ned)
-  - t = Time.now
   - x = options.R['rasapp:cal'].to_s
   - g = (!x.nil? && !x.empty?) ? Marshal.load(x) : (options.R['rasapp:cal']=Marshal.dump(x=CalendarReader::Calendar.new(CAL_URL)); x)
-  - puts "G. time: #{(Time.now-t).to_f}"
   %tr
     / @dani
     %th{:width=>20} &nbsp;
@@ -218,7 +216,7 @@ __END__
   %div#tj0= ras_html(0)
   %div#tj1= ras_html(1)
 
-%a{:href=>"#", :onclick=>"$('div#rasporedi').load('/ras/#{@str}/tj/2');"} Jos tjedana
+/ %a{:href=>"#", :onclick=>"$('div#rasporedi').load('/ras/#{@str}/tj/2');"} Jos tjedana
 
 %p
   %a{:href=>"/raz/#{@str}/prijedlog"} Prijedlog novog eventa
