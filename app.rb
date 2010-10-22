@@ -145,7 +145,7 @@ __END__
     - for i in 1..5
       %th{:valign=>"top", :class=>"events_l"}
         %ul
-          - for x in ((g.past_events+g.future_events).collect{|x| [x.summary, x.description] if (x.start_time.strftime("%d.%m.%Y")==(prvi_dan_tj+i).strftime("%d.%m.%Y"))}.compact)
+          - for x in ((g.past_events+g.future_events).collect{|x| [x.summary, x.description] if (x.start_time.strftime("%d.%m.%Y")==(prvi_dan_tj+i).strftime("%d.%m.%Y"))}.compact).sort
             - hd = (!x[1].nil? && !x[1].empty?)
             %li{:class=>"gcal_event_li#{hd ? " hasdesc" : ""}", :title=>(hd ? x[1].split("\n").join("; ") : nil)}= "#{hd ? "+" : "-"} #{x.first}"
   - for i in 0..8
@@ -178,7 +178,7 @@ __END__
     - for i in 1..5
       %th{:valign=>"top", :class=>"events_l"}
         %ul
-          - for x in ((g.past_events+g.future_events).collect{|x| [x.summary, x.description] if (x.start_time.strftime("%d.%m.%Y")==(prvi_dan_tj+i+7).strftime("%d.%m.%Y"))}.compact)
+          - for x in ((g.past_events+g.future_events).collect{|x| [x.summary, x.description] if (x.start_time.strftime("%d.%m.%Y")==(prvi_dan_tj+i+7).strftime("%d.%m.%Y"))}.compact).sort
             - hd = (!x[1].nil? && !x[1].empty?)
             %li{:class=>"gcal_event_li#{hd ? " hasdesc" : ""}", :title=>(hd ? x[1].split("\n").join("; ") : nil)}= "#{hd ? "+" : "-"} #{x.first}"
   - for i in 0..8
