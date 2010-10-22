@@ -53,7 +53,7 @@ def smjena(datum) # in: <Time>; out: 0 ili 1 (jut. ili pod.)
 end
 
 def razredi(r=options.r) # in: r; out: razredi
-  r.first.collect{|t| t if t.string?}.compact
+  r.collect{|t| t if t.string?}.compact
 end
 
 def raz(str) # in: razred_string; out: formatirani raz., npr.: {in: 2009_a; out: 2.a}
@@ -252,13 +252,14 @@ __END__
 %html{:xmlns => "http://www.w3.org/1999/xhtml"}
   %head
     %meta{:content => "text/html; charset=iso-8859-1", "http-equiv" => "Content-Type"}/
-    %title= (@title || "Raspored#{@t_nast}")
+    %title= (@title || "Raspored#{@t_nast || "App"}")
     %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css"}/
-    / %script{:src => "http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js", :type => "text/javascript"}
+    %script{:src => "http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js", :type => "text/javascript"}
     / %script{:src => "http://plugins.jquery.com/files/jquery.cookie.js.txt", :type => "text/javascript"}
     / %script{:src => "/js/main.js", :type => "text/javascript"}
+    %script{:type => "text/javascript"}
+      = "function getras(var n){$.get(\"/ras/\"+tj+\"/tj/2\");\",function(data){$(\"#rasporedi\").append(data));});} }"
   %body
-    %div{:align => "center"}
-      %div{:align => "left"}
-        = yield
+    %div{:id=>"container"}
+      = yield
 
