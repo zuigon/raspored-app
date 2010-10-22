@@ -5,6 +5,12 @@ require "gcal-lib"
 require "sati-lib"
 require "time"
 
+class Object
+  def string?
+    self.class == String
+  end
+end
+
 POC_DATUM = ["6.9.2010", 0]
 CAL_URL = "file://./basic.ics"
 #http://www.google.com/calendar/ical/81d23ab0r2mcll612eeqlgtd90@group.calendar.google.com/public/basic.ics
@@ -30,7 +36,7 @@ def smjena(datum) # in: <Time>; out: 0 ili 1 (jut. ili pod.)
 end
 
 def razredi(r=options.r) # in: r; out: razredi
-  r.first.collect{|t| t if t.class == String}.compact
+  r.first.collect{|t| t if t.string?}.compact
 end
 
 def raz(str) # in: razred_string; out: formatirani raz., npr.: {in: 2009_a; out: 2.a}
