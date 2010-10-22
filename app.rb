@@ -16,6 +16,22 @@ POC_DATUM = ["6.9.2010", 0]
 CAL_URL = "file://./basic.ics"
 #http://www.google.com/calendar/ical/81d23ab0r2mcll612eeqlgtd90@group.calendar.google.com/public/basic.ics
 
+def redrs(str, val=nil) # ~ Redis Read/Set # Set if nil, else read
+  x = options.R["rasapp:#{str}"].to_s
+  g = (!x.nil? && !x.empty?) ? Marshal.load(x) : (options.R['rasapp:#{str}'] = (val.class == String) ? val : Marshal.dump(val); x)
+end
+
+def redr(str) # ~ Redis Read
+  x = options.R["rasapp:#{str}"]
+  return nil if x.nil?
+  return Marshal.load(x) if x =~ /^\004/
+  x
+end
+
+def redd(str, obj)
+  options.R.del str
+end
+
 def load_cal
   (YAML.load File.read 'raspored.yml')
 end
@@ -62,6 +78,7 @@ end
 
 configure do
   set :r, load_cal()
+  set :R, Redis.new
 end
 
 get '/' do
