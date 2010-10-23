@@ -1,4 +1,4 @@
-#tbl_ras { text-align: center; border-collapse: collapse; }
+#tbl_ras { text-align: center; border-collapse: collapse; cursor: default; }
 .empty { color: lightgray; }
 .gray { background-color: lightgray; }
 .wgray { background-color: #eee; }
@@ -13,3 +13,5 @@ tr td .sati { margin-right: 20px; }
 .help { color: gray; text-decoration: italic; margin-left: 5px; }
 .danas { background-color: lightblue; }
 .tek_sat { color: red; }
+.ozn { background-color: #FFCC00; }
+.highlight { background-color: #BFEFFF; }
