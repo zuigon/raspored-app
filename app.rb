@@ -41,7 +41,7 @@ def redd(str, obj)
   options.R.del str
 end
 
-def load_cal
+def load_ras
   x, d = options.R['rasapp:raspored.yml'], options.R['rasapp:raspored.yml:ts']
   if x.nil? || (Time.parse(d.nil? ? "1.1.2000." : d) < File.mtime('raspored.yml'))
     options.R['rasapp:raspored.yml'] = (Marshal.dump(r=YAML.load(File.read('raspored.yml'))))
@@ -70,7 +70,7 @@ def smjena(datum) # in: <Time>; out: 0 ili 1 (jut. ili pod.)
   r
 end
 
-def razredi(r=load_cal) # in: r; out: razredi
+def razredi(r=load_ras) # in: r; out: razredi
   r.first.collect{|t| t if t.string?}.compact
 end
 
@@ -117,7 +117,7 @@ end
 
 configure do
   set :R, Redis.new
-  # set :r, load_cal()
+  # set :r, load_ras()
   set :r, nil
   error 404 do
     haml "%h1.err Grijeska cetiri nula cetiri ..."
@@ -145,8 +145,7 @@ get '/' do
 end
 
 get '/raz/:str' do |str|
-  ts
-  options.r = load_cal() if options.r.nil? # ako ga GC pojede
+  options.r = load_ras() if options.r.nil? # ako ga GC pojede
   @t_nast = ": #{raz str}"
   @str = str
   @r = options.r[str] rescue nil
