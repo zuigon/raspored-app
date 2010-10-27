@@ -41,7 +41,13 @@ def redd(str, obj)
 end
 
 def load_cal
-  (YAML.load File.read 'raspored.yml')
+  x = options.R['rasapp:raspored.yml']
+  if x.nil?
+    options.R['rasapp:raspored.yml'] = (r=Marshal.dump(YAML.load File.read 'raspored.yml'))
+  else
+    r = Marshal.load x
+  end
+  r
 end
 
 # prvi_dan_tjedna(dan): x=(dan); x.strftime("%d.%m.%Y ")+(x-x.strftime("%w").to_i).strftime("%d.%m.%Y")
