@@ -275,8 +275,9 @@ __END__
           %td{:class=>klase.join(' ')}= (x =~ /\, /) ? "#{x.gsub(/\, /, ' (')})" : x if !x.nil?
 
 @@razredi
-%h2 Svi razredi:
 %center
+  %div#fl_d
+    %h1.raz_naslov R
   %ul.svi_razredi
     - for r in @razredi
       %li
