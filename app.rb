@@ -46,10 +46,10 @@ def load_ras
   if x.nil? || (Time.parse(d.nil? ? "1.1.2000." : d) < File.mtime('raspored.yml'))
     options.R['rasapp:raspored.yml'] = (Marshal.dump(r=YAML.load(File.read('raspored.yml'))))
     options.R['rasapp:raspored.yml:ts']=Time.now.to_s
-    puts "Ras loadan iz filea"
+    # puts "Ras loadan iz filea"
   else
     r = Marshal.load x
-    puts "Ras loadan iz redisa"
+    # puts "Ras loadan iz redisa"
   end
   r
 end
@@ -59,10 +59,10 @@ def load_cal
   if x.nil? || (Time.parse(d.nil? ? "1.1.2000." : d) < File.mtime(CAL_URL[/file:\/\/(.+)/,1]))
     options.R['rasapp:cal']= (options.R['rasapp:cal']=Marshal.dump(r=CalendarReader::Calendar.new(CAL_URL)))
     options.R['rasapp:cal:ts']=Time.now.to_s
-    puts "Cal loadan iz filea"
+    # puts "Cal loadan iz filea"
   else
     r = Marshal.load x
-    puts "Cal loadan iz redisa"
+    # puts "Cal loadan iz redisa"
   end
   r
 end
