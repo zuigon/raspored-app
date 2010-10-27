@@ -25,6 +25,7 @@ class Time
 end
 
 def redrs(str, val=nil) # ~ Redis Read/Set # Set if nil, else read
+  # TODO: redrs str, lambda
   x = options.R["rasapp:#{str}"].to_s
   g = (!x.nil? && !x.empty?) ? Marshal.load(x) : (options.R['rasapp:#{str}'] = (val.class == String) ? val : Marshal.dump(val); x)
 end
@@ -66,7 +67,7 @@ def smjena(datum) # in: <Time>; out: 0 ili 1 (jut. ili pod.)
   r
 end
 
-def razredi(r=options.r) # in: r; out: razredi
+def razredi(r=load_cal) # in: r; out: razredi
   r.first.collect{|t| t if t.string?}.compact
 end
 
@@ -112,8 +113,24 @@ def get_ras_tj(raz, tj)
 end
 
 configure do
-  set :r, load_cal()
   set :R, Redis.new
+  # set :r, load_cal()
+  set :r, nil
+  error 404 do
+    haml "%h1.err Grijeska cetiri nula cetiri ..."
+  end
+  error 500 do
+    haml "%h1.err ... excuse me while I kiss the sky! (Pardon 500)"
+  end
+end
+
+
+def ts
+  @TIME_x = Time.now
+end
+
+def tg(txt=nil)
+  puts "#{('T: '+txt+' > ' if !txt.nil?)}#{(Time.now-@TIME_x).to_f} seconds"
 end
 
 get '/' do
@@ -125,16 +142,20 @@ get '/' do
 end
 
 get '/raz/:str' do |str|
+  ts
   options.r = load_cal() if options.r.nil? # ako ga GC pojede
   @t_nast = ": #{raz str}"
   @str = str
   @r = options.r[str] rescue nil
+  error 404 if @r.nil?
   @ras, @rasNext = {}, {}
+  tg '/raz/:str, do sorta, injecta'
+  ts
   %w(pon uto sri cet pet).each {|s|
     @ras[s] = @r[s].sort{|a,b| (smjena(DateTime.now)==0) ? (b[0]<=>a[0]) : (a[0]<=>b[0]) }.
     inject({}){|h, (k, v)| h[k]=(v.nil?) ? "--" : v.upcase; h}
-    @rasNext[s] = get_ras_tj(str, 1)
   }
+  tg '/raz/:str, sort, inject, ...'
   haml :razred
 end
 
