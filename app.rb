@@ -42,11 +42,14 @@ def redd(str, obj)
 end
 
 def load_cal
-  x = options.R['rasapp:raspored.yml']
-  if x.nil?
-    options.R['rasapp:raspored.yml'] = (r=Marshal.dump(YAML.load File.read 'raspored.yml'))
+  x, d = options.R['rasapp:raspored.yml'], options.R['rasapp:raspored.yml:ts']
+  if x.nil? || (Time.parse(d.nil? ? "1.1.2000." : d) < File.mtime('raspored.yml'))
+    options.R['rasapp:raspored.yml'] = (Marshal.dump(r=YAML.load(File.read('raspored.yml'))))
+    options.R['rasapp:raspored.yml:ts']=Time.now.to_s
+    puts "Ras loadan iz filea"
   else
     r = Marshal.load x
+    puts "Ras loadan iz redisa"
   end
   r
 end
@@ -149,13 +152,10 @@ get '/raz/:str' do |str|
   @r = options.r[str] rescue nil
   error 404 if @r.nil?
   @ras, @rasNext = {}, {}
-  tg '/raz/:str, do sorta, injecta'
-  ts
   %w(pon uto sri cet pet).each {|s|
     @ras[s] = @r[s].sort{|a,b| (smjena(DateTime.now)==0) ? (b[0]<=>a[0]) : (a[0]<=>b[0]) }.
     inject({}){|h, (k, v)| h[k]=(v.nil?) ? "--" : v.upcase; h}
   }
-  tg '/raz/:str, sort, inject, ...'
   haml :razred
 end
 
