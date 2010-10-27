@@ -112,6 +112,9 @@ end
 
 get '/' do
   # @r = options.r
+  @razredi = (razredi+%w(2009_b 2009_c 2009_d)).sort
+  # razd @razredi
+  # @razredi = @razredi.delete_at -1 if @razredi[-1] == -1
   haml :razredi
 end
 
@@ -174,6 +177,13 @@ def ozn?(predmet, eventi_d) # oznaci sat u danu ako je u eventima tog dana
   false
 end
 
+def razd(l) # [1,2,3] -> [1, -1, 2, -1, 3]
+  for i in 0..(l.count-1)
+    l.insert 1+2*i, -1
+  end
+  l[0..(l.count-2)]
+end
+
 __END__
 
 @@ras_tbl
@@ -225,10 +235,11 @@ __END__
 
 @@razredi
 %h2 Svi razredi:
-%ul
-  - for r in razredi.sort
-    %li
-      %a{:href=>"/raz/#{r}"}= "#{raz r} (#{r})"
+%center
+  %ul.svi_razredi
+    - for r in @razredi
+      %li
+        %a{:href=>"/raz/#{r}"}= raz r
 
 @@test
 %pre= wrap_text(razredi(@r).inspect)
