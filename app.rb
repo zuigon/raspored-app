@@ -54,7 +54,19 @@ def load_ras
   r
 end
 
-# prvi_dan_tjedna(dan): x=(dan); x.strftime("%d.%m.%Y ")+(x-x.strftime("%w").to_i).strftime("%d.%m.%Y")
+def load_cal
+  x, d = options.R['rasapp:cal'], options.R['rasapp:cal:ts']
+  if x.nil? || (Time.parse(d.nil? ? "1.1.2000." : d) < File.mtime(CAL_URL[/file:\/\/(.+)/,1]))
+    options.R['rasapp:cal']= (options.R['rasapp:cal']=Marshal.dump(r=CalendarReader::Calendar.new(CAL_URL)))
+    options.R['rasapp:cal:ts']=Time.now.to_s
+    puts "Cal loadan iz filea"
+  else
+    r = Marshal.load x
+    puts "Cal loadan iz redisa"
+  end
+  r
+end
+
 def prvi_dan_tj
   DateTime.now - DateTime.now.strftime("%w").to_i
 end
@@ -91,10 +103,13 @@ end
 def ras_html(tj) #tj: [0:]
   @tj = tj
   @dani = %w(pon uto sri cet pet sub ned)
-  x = options.R['rasapp:cal'].to_s
-  g = (!x.nil? && !x.empty?) ? Marshal.load(x) : (options.R['rasapp:cal']=Marshal.dump(x=CalendarReader::Calendar.new(CAL_URL)); x)
+
+  # x = options.R['rasapp:cal'].to_s
+  # g = (!x.nil? && !x.empty?) ? Marshal.load(x) : (options.R['rasapp:cal']=Marshal.dump(x=CalendarReader::Calendar.new(CAL_URL)); x)
+  @g ||= load_cal
+
   @eventi = {}; @dani.first(5).each {|x| @eventi[x]=[]}
-  ((g.past_events+g.future_events).
+  ((@g.past_events+@g.future_events).
   collect{|x|
     @eventi[@dani[x.start_time.strftime("%w").to_i-1]] <<
       [x.summary, x.description] if
