@@ -142,7 +142,6 @@ configure do
   end
 end
 
-
 def ts
   @TIME_x = Time.now
 end
@@ -160,11 +159,12 @@ get '/' do
 end
 
 get '/raz/:str' do |str|
+  (error 404; return) if ! str =~ /^\d\d\d\d_[a-z]$/
   options.r = load_ras() if options.r.nil? # ako ga GC pojede
+  (error 404; return) if ! options.r[str]
   @t_nast = ": #{raz str}"
   @str = str
   @r = options.r[str] rescue nil
-  error 404 if @r.nil?
   @ras, @rasNext = {}, {}
   %w(pon uto sri cet pet).each {|s|
     @ras[s] = @r[s].sort{|a,b| (smjena(DateTime.now)==0) ? (b[0]<=>a[0]) : (a[0]<=>b[0]) }.
