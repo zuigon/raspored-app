@@ -152,7 +152,8 @@ end
 
 get '/' do
   # @r = options.r
-  @razredi = (razredi+%w(2009_b 2009_c 2009_d)).sort
+  # @razredi = (razredi+%w(2009_b 2009_c 2009_d)).sort
+  @razredi = razredi.sort
   # razd @razredi
   # @razredi = @razredi.delete_at -1 if @razredi[-1] == -1
   haml :razredi
