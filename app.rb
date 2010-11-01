@@ -161,17 +161,27 @@ configure do
     haml "%h1.err Grijeska cetiri nula cetiri ..."
   end
   error 500 do
-    haml "%h1.err ... excuse me while I kiss the sky! (Pardon 500)\n%h2.err greska se dogodila sada da se ne bi dogodila kasnije"
+    haml "%h1.err ... excuse me while I kiss the sky! (Greska)\n%h2.err greska se dogodila sada da se ne bi dogodila kasnije"
   end
 end
 
-def ts
-  @TIME_x = Time.now
+def ozn?(predmet, eventi_d) # oznaci sat u danu ako je u eventima tog dana
+  eventi_d.compact.each{|e|
+    return true if !predmet.nil? &&
+      (e[/(\w+) /,1].downcase rescue "") == predmet.downcase
+  }
+  false
 end
 
-def tg(txt=nil)
-  puts "#{('T: '+txt+' > ' if !txt.nil?)}#{(Time.now-@TIME_x).to_f} seconds"
+def razd(l) # [1,2,3] -> [1, -1, 2, -1, 3]
+  for i in 0..(l.count-1)
+    l.insert 1+2*i, -1
+  end
+  l[0..(l.count-2)]
 end
+
+def ts(); @TIME_x = Time.now; end
+def tg(txt=nil); puts "#{('T: '+txt+' > ' if !txt.nil?)}#{(Time.now-@TIME_x).to_f} seconds"; end
 
 get '/' do
   # @r = options.r
@@ -244,21 +254,6 @@ get '/raz/:str/tj/:tj' do |str, tj|
   haml :ras_tbl, :layout => false
 end
 
-def ozn?(predmet, eventi_d) # oznaci sat u danu ako je u eventima tog dana
-  eventi_d.compact.each{|e|
-    return true if !predmet.nil? &&
-      (e[/(\w+) /,1].downcase rescue "") == predmet.downcase
-  }
-  false
-end
-
-def razd(l) # [1,2,3] -> [1, -1, 2, -1, 3]
-  for i in 0..(l.count-1)
-    l.insert 1+2*i, -1
-  end
-  l[0..(l.count-2)]
-end
-
 __END__
 
 @@ras_tbl
@@ -304,9 +299,7 @@ __END__
           - sada=nil; sada = (t[1] rescue nil) if @dani[(DateTime.now.strftime("%w").to_i-1)%7] == s && t[0]==(smjena(DateTime.now)+1)
           - klase << "tek_sat" if sada==i
           - klase << ((@dani[(DateTime.now.strftime("%w").to_i-1)%7] == s) ? "danas" : "")
-          %td{:class=>klase.join(' ')}= (x =~ /\, /) ? "#{x.gsub(/\, /, ' (')})" : x if !x.nil?
-        - else
-          %td{:class=>klase.join(' ')}= (x =~ /\, /) ? "#{x.gsub(/\, /, ' (')})" : x if !x.nil?
+        %td{:class=>klase.join(' ')}= (x =~ /\, /) ? "#{x.gsub(/\, /, ' (')})" : x if !x.nil?
 
 @@razredi
 %center
@@ -315,7 +308,7 @@ __END__
   %ul.svi_razredi
     - for r in @razredi
       %li
-        %a{:href=>"/raz/#{r}"}= raz r
+        %a{:href=>"/#{r}"}= raz r
 
 @@test
 %pre= wrap_text(razredi(@r).inspect)
