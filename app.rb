@@ -200,7 +200,7 @@ get '/raz/:x' do |x|
 end
 
 # /a ili /2009_a
-[%r{^/([a-z])\/?$}, %r{^/((\d\d)?\d\d_[a-z])\/?$}].each do |path|
+[%r{^/([a-z])\/?$}, %r{^/([\d]{2}?\d\d_[a-z])\/?$}].each do |path|
   get path do |str|
     @dani = %w(pon uto sri cet pet sub ned)
     str = "#{DEF_GEN}_#{str}" if str =~ /^[a-z]$/
@@ -384,7 +384,7 @@ __END__
     / %script{:type => "text/javascript"}
     / = "function getras(var n){$.get(\"/ras/\"+tj+\"/tj/2\");\",function(data){$(\"#rasporedi\").append(data));});} }"
     %script{:type => "text/javascript"}
-      = '$(function(){$("td, th.events_l").hover(function(){$(this).addClass("highlight");},function(){$(this).removeClass("highlight");})})'
+      = '$(function(){$("table#tbl_ras tr td, table#tbl_ras th.events_l").hover(function(){$(this).addClass("highlight");},function(){$(this).removeClass("highlight");})})'
   %body
     %div{:id=>"container"}
       = yield
