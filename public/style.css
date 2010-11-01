@@ -1,3 +1,4 @@
+a:visited { color: blue; }
 #tbl_ras { text-align: center; border-collapse: collapse; cursor: default; }
 .empty { color: lightgray; }
 .gray { background-color: lightgray; }
