@@ -18,6 +18,6 @@ tr td .sati { margin-right: 20px; }
 ul.svi_razredi { width: 200px; position: relative; top: 100px; }
 ul.svi_razredi li { padding: 10px 0; font-size: 200%; }
 ul.svi_razredi li a { text-decoration: none; color: red; font-family: georgia; text-decoration: overline underline; letter-spacing: 5px; }
-h1.err { font-family: georgia; font-style: italic; }
+h1.err, h2.err { font-family: georgia; font-style: italic; }
 h1.raz_naslov { font-family: georgia; font-size: 1000%; float: left; margin: 0; padding: 0; }
 div#fl_d { position: relative; top: 50px; width: 200px; float: left; }

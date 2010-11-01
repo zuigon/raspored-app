@@ -138,7 +138,7 @@ configure do
     haml "%h1.err Grijeska cetiri nula cetiri ..."
   end
   error 500 do
-    haml "%h1.err ... excuse me while I kiss the sky! (Pardon 500)"
+    haml "%h1.err ... excuse me while I kiss the sky! (Pardon 500)\n%h2.err greska se dogodila sada da se ne bi dogodila kasnije"
   end
 end
 
@@ -230,12 +230,12 @@ __END__
 
 @@ras_tbl
 - if @tj == 0
-  - str = "Ovaj tjedan - "
+  - str = "Ovaj tjedan "
 - elsif @tj == 1
-  - str = "Slijedeci tjedan - "
+  - str = "Slijedeci tjedan "
 - else
   - str = ""
-%h2= "#{str} (#{(smjena DateTime.now+@tj*7)==0 ? "1." : "2."} smjena, #{(prvi_dan_tj+@tj*7+1).strftime "%d.%m."} - #{(prvi_dan_tj+@tj*7+5).strftime "%d.%m."})"
+%h2= "#{str} (#{(smjena DateTime.now+@tj*7)==0 ? "1." : "2."} smjena)"
 
 %table{:border=>2, :id=>"tbl_ras"}
   %tr
