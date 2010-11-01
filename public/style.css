@@ -21,3 +21,6 @@ ul.svi_razredi li a { text-decoration: none; color: red; font-family: georgia; t
 h1.err, h2.err { font-family: georgia; font-style: italic; }
 h1.raz_naslov { font-family: georgia; font-size: 1000%; float: left; margin: 0; padding: 0; }
 div#fl_d { position: relative; top: 50px; width: 200px; float: left; }
+div#varijante { clear: both; }
+span#varijante a { color: orange; margin: 0 5px; text-decoration: none; }
+span#varijante a[selected="1"] { text-decoration: underline; }

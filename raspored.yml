@@ -22,9 +22,9 @@
     4: gk, 5
     5: fiz
     6: inf
-    7: inf2
+    7: 
   cet:
-    1: inf2
+    1: 
     2: inf
     3: hj, 2
     4: lat, 8
@@ -41,3 +41,6 @@
     7: 
   conf:
     druga: obrnuta
+    var: [inf, tal] # Array
+    var_inf: [sri_7_inf2, cet_1_inf2] # var_STR - dan_sat_predmet(_ucionica)
+    var_tal: [sri_7_tal, pet_7_tal_7]

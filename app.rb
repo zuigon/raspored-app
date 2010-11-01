@@ -8,6 +8,7 @@ require "redis"
 
 POC_DATUM = ["6.9.2010", 0]
 CAL_URL = "file://./basic.ics"
+DEF_GEN = "2009" # default razredi
 #http://www.google.com/calendar/ical/81d23ab0r2mcll612eeqlgtd90@group.calendar.google.com/public/basic.ics
 
 class Object
@@ -100,9 +101,30 @@ def boja(s, i, p="") # dan, sat, txt
   nil
 end
 
-def ras_html(tj) #tj: [0:]
+def ras_html(tj, var=nil) #tj: [0:]
   @tj = tj
   @dani = %w(pon uto sri cet pet sub ned)
+
+  @vars = @r['conf']['var'] rescue nil
+  # @var = var if @var.nil?
+  @var = var
+  @var = @vars[0] rescue nil if @var.nil?
+  varsw = @r['conf']['var_'+@var] rescue nil
+  # puts "Dbg:\n@var: #{@var}\n@r: #{@r.inspect}\nvarsw: #{varsw.inspect}"
+
+  @ras = {}
+  @dani.first(5).each {|s|
+    @ras[s] = @r[s].sort{|a,b| (smjena(DateTime.now)==0) ? (b[0]<=>a[0]) : (a[0]<=>b[0]) }.
+    inject({}){|h, (k, v)| h[k]=(v.nil?) ? "--" : v.upcase; h}
+    if !varsw.nil? && (xx=varsw.collect{|x| x if x=~/^#{s}_/}.compact)
+      # [sri_7_inf2, cet_1_inf2]
+      xx.each{|x|
+        da, sa, pr, uc = x.split '_'
+        # puts "BB #{da.inspect} #{sa.inspect} #{pr.inspect} #{uc.inspect} => #{pr}#{", "+uc if uc}"
+        @ras[da][sa.to_i] = "#{pr}#{", "+uc if uc}".upcase
+      }
+    end
+  }
 
   # x = options.R['rasapp:cal'].to_s
   # g = (!x.nil? && !x.empty?) ? Marshal.load(x) : (options.R['rasapp:cal']=Marshal.dump(x=CalendarReader::Calendar.new(CAL_URL)); x)
@@ -117,6 +139,7 @@ def ras_html(tj) #tj: [0:]
         (x.start_time.to_datetime <= (prvi_dan_tj+5+7*@tj))
   })
   @dani.first(5).each{|d| @eventi[d].sort!}
+
   haml :ras_tbl, :layout => false
 end
 
@@ -159,19 +182,29 @@ get '/' do
   haml :razredi
 end
 
-get '/raz/:str' do |str|
-  (error 404; return) if ! str =~ /^\d\d\d\d_[a-z]$/
-  options.r = load_ras() if options.r.nil? # ako ga GC pojede
-  (error 404; return) if ! options.r[str]
-  @t_nast = ": #{raz str}"
-  @str = str
-  @r = options.r[str] rescue nil
-  @ras, @rasNext = {}, {}
-  %w(pon uto sri cet pet).each {|s|
-    @ras[s] = @r[s].sort{|a,b| (smjena(DateTime.now)==0) ? (b[0]<=>a[0]) : (a[0]<=>b[0]) }.
-    inject({}){|h, (k, v)| h[k]=(v.nil?) ? "--" : v.upcase; h}
-  }
-  haml :razred
+# /a ili /2009_a
+[%r{^/([a-z])\/?$}, %r{^/(\d\d\d\d_[a-z])\/?$}].each do |path|
+  get path do |str|
+    @dani = %w(pon uto sri cet pet sub ned)
+    str = "#{DEF_GEN}_#{str}" if str =~ /^[a-z]$/
+    (error 404; return) if ! str =~ /^\d\d\d\d_[a-z]$/
+    options.r = load_ras() if options.r.nil? # ako ga GC pojede
+    (error 404; return) if ! options.r[str]
+    @str = str; @t_nast = ": #{raz str}"
+    @r = options.r[str] rescue nil
+
+    if params['v']
+      @var = params['v']
+      response.set_cookie "#{@str}_var", @var
+    else
+      @var=request.cookies["#{@str}_var"]
+    end
+    @vars = @r['conf']['var'] rescue nil
+    @var=nil if @var =~ /[^a-z0-9]/i
+    (@var=@vars[0] rescue nil) if @var.nil? # default varijanta
+
+    haml :razred
+  end
 end
 
 get '/raz/:str/prijedlog' do |str|
@@ -291,9 +324,18 @@ __END__
 @@razred
 %h1= "Razred: #{raz @str}"
 
+/ %select{:name=>"varijanta", :onchange=>"alert(this.options[this.selectedIndex].value);"}
+/   - for v in @vars
+/     %option{:selected=>(v==var)?true:nil}= v.upcase
+
+%span{:style=>"font-size: 1.3em; font-weight: bold; margin-right: 10px;"} Varijante:
+%span#varijante
+  - for v in @vars
+    %a{:selected=>(v==@var)?'1':nil, :href=>"?v=#{v}"}= v.upcase
+
 %div#rasporedi
-  %div#tj0= ras_html(0)
-  %div#tj1= ras_html(1)
+  %div#tj0= ras_html(0, @var)
+  %div#tj1= ras_html(1, @var)
 
 / %a{:href=>"#", :onclick=>"$('div#rasporedi').load('/ras/#{@str}/tj/2');"} Jos tjedana
 
