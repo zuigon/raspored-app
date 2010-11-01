@@ -17,7 +17,7 @@ tr td .sati { margin-right: 20px; }
 .tek_sat { color: red; }
 .ozn { background-color: #FFCC00; }
 .highlight { background-color: #BFEFFF; }
-ul.svi_razredi { width: 200px; position: relative; top: 100px; }
+ul.svi_razredi { width: 200px; position: relative; }
 ul.svi_razredi li { padding: 10px 0; font-size: 200%; }
 ul.svi_razredi li a { text-decoration: none; color: red; font-family: georgia; text-decoration: overline underline; letter-spacing: 5px; }
 h1.err, h2.err { font-family: georgia; font-style: italic; }
@@ -26,3 +26,4 @@ div#fl_d { position: relative; top: 50px; width: 200px; }
 div#varijante { clear: both; }
 span#varijante a { color: orange; margin: 0 5px; text-decoration: none; }
 span#varijante a[selected="1"] { text-decoration: underline; }
+table#t { position: relative; top: 50px; }
