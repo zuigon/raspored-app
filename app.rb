@@ -186,7 +186,7 @@ def tg(txt=nil); puts "#{('T: '+txt+' > ' if !txt.nil?)}#{(Time.now-@TIME_x).to_
 get '/' do
   # @r = options.r
   # @razredi = (razredi+%w(2009_b 2009_c 2009_d)).sort
-  @razredi = razredi.sort
+  @razredi = (razredi+%w(2009_b 2009_c 2009_d 2009_e 2010_a 2010_b 2010_c 2010_d 2010_e 2010_f)).sort
   # razd @razredi
   # @razredi = @razredi.delete_at -1 if @razredi[-1] == -1
   haml :razredi
@@ -201,10 +201,11 @@ get '/raz/:x' do |x|
 end
 
 # /a ili /2009_a
-[%r{^/([a-z])\/?$}, %r{^/(\d\d\d\d_[a-z])\/?$}].each do |path|
+[%r{^/([a-z])\/?$}, %r{^/((\d\d)?\d\d_[a-z])\/?$}].each do |path|
   get path do |str|
     @dani = %w(pon uto sri cet pet sub ned)
     str = "#{DEF_GEN}_#{str}" if str =~ /^[a-z]$/
+    str = "20#{str}" if str =~ /^\d\d_[a-z]$/
     (error 404; return) if ! str =~ /^\d\d\d\d_[a-z]$/
     options.r = load_ras() if options.r.nil? # ako ga GC pojede
     (error 404; return) if ! options.r[str]
@@ -311,12 +312,16 @@ __END__
 
 @@razredi
 %center
-  %div#fl_d
-    %h1.raz_naslov R
-  %ul.svi_razredi
-    - for r in @razredi
-      %li
-        %a{:href=>"/#{r}"}= raz r
+  %table
+    %tr
+      %td
+        %div#fl_d
+          %h1.raz_naslov R
+      %td
+        %ul.svi_razredi
+          - for r in @razredi
+            %li
+              %a{:href=>"/#{r}"}= raz r
 
 @@test
 %pre= wrap_text(razredi(@r).inspect)

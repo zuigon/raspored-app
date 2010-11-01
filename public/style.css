@@ -1,3 +1,4 @@
+body { font-family: serif; }
 a:link, a:visited, a:active, a:hover { color: blue; }
 #tbl_ras { text-align: center; border-collapse: collapse; cursor: default; }
 .empty { color: lightgray; }
@@ -21,7 +22,7 @@ ul.svi_razredi li { padding: 10px 0; font-size: 200%; }
 ul.svi_razredi li a { text-decoration: none; color: red; font-family: georgia; text-decoration: overline underline; letter-spacing: 5px; }
 h1.err, h2.err { font-family: georgia; font-style: italic; }
 h1.raz_naslov { font-family: georgia; font-size: 1000%; float: left; margin: 0; padding: 0; }
-div#fl_d { position: relative; top: 50px; width: 200px; float: left; }
+div#fl_d { position: relative; top: 50px; width: 200px; }
 div#varijante { clear: both; }
 span#varijante a { color: orange; margin: 0 5px; text-decoration: none; }
 span#varijante a[selected="1"] { text-decoration: underline; }
