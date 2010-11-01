@@ -192,6 +192,14 @@ get '/' do
   haml :razredi
 end
 
+get '/raz/:x' do |x|
+  if x =~ /^2009_/
+    redirect "/#{x[/2009_(.+)/,1]}"
+  else
+    redirect "/#{x}"
+  end
+end
+
 # /a ili /2009_a
 [%r{^/([a-z])\/?$}, %r{^/(\d\d\d\d_[a-z])\/?$}].each do |path|
   get path do |str|
