@@ -10,6 +10,7 @@ require "app-lib"
 POC_DATUM = ["6.9.2010", 0]
 CAL_URL = "file://./basic.ics"
 DEF_GEN = "2009" # default razredi
+DOM = "http://raspored.bkrsta.co.cc"
 #http://www.google.com/calendar/ical/81d23ab0r2mcll612eeqlgtd90@group.calendar.google.com/public/basic.ics
 
 configure do
@@ -22,6 +23,10 @@ configure do
   error 500 do
     haml "%h1.err ... excuse me while I kiss the sky! (Greska)\n%h2.err greska se dogodila sada da se ne bi dogodila kasnije"
   end
+end
+
+before do
+  redirect DOM+env["REQUEST_URI"] if env["SERVER_NAME"] == "bkrsta.co.cc"
 end
 
 get '/' do
@@ -194,7 +199,7 @@ __END__
 
 @@prijedlog
 %h1= @title
-%form{:action=>"/raz/#{@str}/prijedlog", :method=>"post"}
+form{:action=>"/raz/#{@str}/prijedlog", :method=>"post"}
   %p
     %label{:for=>"date"} Datum
     %br
