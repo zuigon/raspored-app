@@ -235,5 +235,10 @@ form{:action=>"/raz/#{@str}/prijedlog", :method=>"post"}
       = '$(function(){$("table#tbl_ras tr td, table#tbl_ras th.events_l").hover(function(){$(this).addClass("highlight");},function(){$(this).removeClass("highlight");})})'
   %body
     %div{:id=>"container"}
+      - if (!!(request.referer.match(/http:\/\/raz(red)?.bkrsta.co.cc\/.+/)[0] rescue false))
+        %a{:href=>request.referer, :style=>"color: red;"} &lt;&lt; Nazad na forum
+      - else
+        %a{:href=>"http://razred.bkrsta.co.cc/", :style=>"color: red;"} Forum
+
       = yield
 
