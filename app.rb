@@ -190,6 +190,8 @@ __END__
 
 / %a{:href=>"#", :onclick=>"$('div#rasporedi').load('/ras/#{@str}/tj/2');"} Jos tjedana
 
+%div.cb
+
 %p
   %a{:href=>"/raz/#{@str}/prijedlog"} Prijedlog novog eventa
   &nbsp; | &nbsp;

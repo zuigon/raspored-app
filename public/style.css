@@ -27,3 +27,6 @@ div#varijante { clear: both; }
 span#varijante a { color: orange; margin: 0 5px; text-decoration: none; }
 span#varijante a[selected="1"] { text-decoration: underline; }
 table#t { position: relative; top: 50px; }
+div#tj0 { float: left; margin-right: 60px; border: 1px solid red; }
+div#tj1 { float: left; margin-right: 30px; border: 1px solid red; }
+div.cb { clear: both; }
