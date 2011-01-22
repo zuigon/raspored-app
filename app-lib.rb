@@ -119,13 +119,15 @@ def ras_html(tj, var=nil) #tj: [0:]
   # g = (!x.nil? && !x.empty?) ? Marshal.load(x) : (options.R['rasapp:cal']=Marshal.dump(x=CalendarReader::Calendar.new(CAL_URL)); x)
   @g ||= load_cal
 
-  @eventi = {}; @dani.first(5).each {|x| @eventi[x]=[]}
+  pdt = prvi_dan_tj
+  @eventi = {};
+  @dani.first(5).each{|x| @eventi[x]=[]}
   ((@g.past_events+@g.future_events).
   collect{|x|
     @eventi[@dani[x.start_time.strftime("%w").to_i-1]] <<
       [x.summary, x.description] if
-        (x.start_time.to_datetime >= (prvi_dan_tj+7*@tj)) &&
-        (x.start_time.to_datetime <= (prvi_dan_tj+5+7*@tj))
+        (x.start_time.to_datetime >= (pdt+7*@tj)) &&
+        (x.start_time.to_datetime <= (pdt+5+7*@tj))
   })
   @dani.first(5).each{|d| @eventi[d].sort!}
 
