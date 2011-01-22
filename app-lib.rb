@@ -101,8 +101,9 @@ def ras_html(tj, var=nil) #tj: [0:]
   # puts "Dbg:\n@var: #{@var}\n@r: #{@r.inspect}\nvarsw: #{varsw.inspect}"
 
   @ras = {}
+  sr = (smjena(DateTime.now)==0) ? "(b[0]<=>a[0])" : "(a[0]<=>b[0])"
   @dani.first(5).each {|s|
-    @ras[s] = @r[s].sort{|a,b| (smjena(DateTime.now)==0) ? (b[0]<=>a[0]) : (a[0]<=>b[0]) }.
+    @ras[s] = @r[s].sort{|a,b| eval sr }.
     inject({}){|h, (k, v)| h[k]=(v.nil?) ? "--" : v.upcase; h}
     if !varsw.nil? && (xx=varsw.collect{|x| x if x=~/^#{s}_/}.compact)
       # [sri_7_inf2, cet_1_inf2]
