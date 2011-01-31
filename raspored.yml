@@ -1,46 +1,46 @@
 2009_a: #2.a
   pon:
-    1: pov, 5
-    2: geo, 10
+    1: pov
+    2: geo
     3: kem
-    4: et, 9
-    5: eng, 8
+    4: lat
+    5: eng
     6: tzk
     7: bio
   uto:
-    1: sro, 6
-    2: mat, 7
-    3: mat, 7
-    4: lat, 8
-    5: lik, 9
-    6: fiz, 6
-    7: eng, 8
+    1: hj
+    2: mat
+    3: mat
+    4: lat
+    5: lik
+    6: fiz
+    7: eng
   sri:
-    1: pov, 1
-    2: hj, 6
+    1: pov
+    2: hj
     3: kem
-    4: gk, 5
+    4: sro
     5: fiz
-    6: inf
-    7: 
+    6: gk
+    7:
   cet:
-    1: 
+    1:
     2: inf
-    3: hj, 2
-    4: lat, 8
-    5: mat, 7
-    6: mat, 7
+    3: hj
+    4: hj
+    5: mat
+    6: mat
     7: fiz
   pet:
-    1: geo, 10
-    2: hj, 6
-    3: hj, 6
-    4: eng, 4
+    1: geo
+    2: etk
+    3: inf
+    4: eng
     5: bio
     6: tzk
-    7: 
+    7:
   conf:
     druga: obrnuta
     var: [inf, tal] # Array
     var_inf: [sri_7_inf2, cet_1_inf2] # var_STR - dan_sat_predmet(_ucionica)
-    var_tal: [sri_7_tal, pet_7_tal_7]
+    var_tal: [sri_7_tal, pet_7_tal]
