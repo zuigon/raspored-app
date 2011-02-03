@@ -134,6 +134,46 @@ def ras_html(tj, var=nil) #tj: [0:]
   haml :ras_tbl, :layout => false
 end
 
+def ras_html_json(tj, var=nil) #tj: [0:]
+  @tj = tj
+  @dani = %w(pon uto sri cet pet sub ned)
+
+  @vars = @r['conf']['var'] rescue nil
+  @var = var
+  @var = @vars[0] rescue nil if @var.nil?
+  varsw = @r['conf']['var_'+@var] rescue nil
+
+  @ras = {}
+  sr = (smjena(DateTime.now)==0) ? "(b[0]<=>a[0])" : "(a[0]<=>b[0])"
+  @dani.first(5).each {|s|
+    @ras[s] = @r[s].sort{|a,b| eval sr }.
+    inject({}){|h, (k, v)| h[k]=(v.nil?) ? "--" : v.upcase; h}
+    if !varsw.nil?
+      varsw.collect{|x| x if x=~/^#{s}_/}.compact.each{|x|
+        da, sa, pr, uc = x.split '_'
+        @ras[da][sa.to_i] = "#{pr}#{", "+uc if uc}".upcase
+      }
+    end
+  }
+
+  @g ||= load_cal
+
+  pdt = prvi_dan_tj
+  @eventi = {};
+  @dani.first(5).each{|x| @eventi[x]=[]}
+  ((@g.past_events+@g.future_events).
+  collect{|x|
+    @eventi[@dani[x.start_time.strftime("%w").to_i-1]] <<
+      [x.summary, x.description] if
+        (x.start_time.to_datetime >= (pdt+7*@tj)) &&
+        (x.start_time.to_datetime <= (pdt+5+7*@tj))
+  })
+  @dani.first(5).each{|d| @eventi[d].sort!}
+
+  # haml :ras_tbl_json, :layout => false
+  {"ras"=>@ras, "events"=>@eventi}
+end
+
 def get_ras_tj(raz, tj)
   @r = options.r[raz] rescue (return nil)
   ras = {}

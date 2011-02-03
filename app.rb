@@ -6,6 +6,7 @@ require "redis"
 require "gcal-lib"
 require "sati-lib"
 require "app-lib"
+require "json"
 
 POC_DATUM = ["6.9.2010", 0]
 CAL_URL = "file://./basic.ics"
@@ -68,6 +69,31 @@ end
     (@var=@vars[0] rescue nil) if @var.nil? # default varijanta
 
     haml :razred
+  end
+end
+
+[%r{^/([a-z]).json$}, %r{^/([\d]{2}?\d\d_[a-z]).json$}].each do |path|
+  get path do |str|
+    @dani = %w(pon uto sri cet pet sub ned)
+    str = "#{DEF_GEN}_#{str}" if str =~ /^[a-z]$/
+    str = "20#{str}" if str =~ /^\d\d_[a-z]$/
+    (error 404; return) if ! str =~ /^\d\d\d\d_[a-z]$/
+    options.r = load_ras() if options.r.nil? # ako ga GC pojede
+    (error 404; return) if ! options.r[str]
+    @str = str; @t_nast = ": #{raz str}"
+    @r = options.r[str] rescue nil
+
+    if params['v']
+      @var = params['v']
+      response.set_cookie "#{@str}_var", @var
+    else
+      @var=request.cookies["#{@str}_var"]
+    end
+    @vars = @r['conf']['var'] rescue nil
+    @var=nil if @var =~ /[^a-z0-9]/i
+    (@var=@vars[0] rescue nil) if @var.nil? # default varijanta
+
+    haml :razred_json, :layout => false
   end
 end
 
@@ -198,6 +224,21 @@ __END__
   %a{:href=>"/"} Svi razredi
 %p
   %a{:href=>"http://github.com/bkrsta/raspored-app"} Source
+
+
+@@razred_json
+%pre
+  - dani = %w(pon uto sri cet pet)
+  - tjs = [ras_html_json(0, @var), ras_html_json(1, @var)]
+  - o = {"razred"=>nil, "raspored"=>{"tjedni"=>{}}}
+  - o["razred"] = raz @str
+  - for tj in 0..(tjs.count-1)
+    - for dan in dani
+      - o["raspored"]["tjedni"][tj] = {}
+      - o["raspored"]["tjedni"][tj][dan] = tjs[tj]["ras"][dan].sort.collect{|x| "#{x[0]}. #{x[1]}" }.join(", ")
+
+  = JSON.pretty_generate JSON.load o.to_json
+
 
 @@prijedlog
 %h1= @title
