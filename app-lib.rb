@@ -164,7 +164,7 @@ def ras_html_json(tj, var=nil) #tj: [0:]
   ((@g.past_events+@g.future_events).
   collect{|x|
     @eventi[@dani[x.start_time.strftime("%w").to_i-1]] <<
-      [x.summary, x.description] if
+      [x.summary, x.description.nil? ? nil : x.description.empty? ? nil : x.description] if
         (x.start_time.to_datetime >= (pdt+7*@tj)) &&
         (x.start_time.to_datetime <= (pdt+5+7*@tj))
   })
