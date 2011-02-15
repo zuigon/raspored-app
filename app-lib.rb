@@ -111,9 +111,9 @@ def ras_html(tj, var=nil) #tj: [0:]
   @dani.first(5).each {|s|
     @ras[s] = @r[s].sort{|a,b| eval sr }.
     inject({}){|h, (k, v)| h[k]=(v.nil?) ? "--" : v.upcase; h}
-    if !varsw.nil? && (xx=varsw.collect{|x| x if x=~/^#{s}_/}.compact)
+    if !varsw.nil?
       # [sri_7_inf2, cet_1_inf2]
-      xx.each{|x|
+      varsw.collect{|x| x if x=~/^#{s}_/}.compact.each{|x|
         da, sa, pr, uc = x.split '_'
         # puts "BB #{da.inspect} #{sa.inspect} #{pr.inspect} #{uc.inspect} => #{pr}#{", "+uc if uc}"
         @ras[da][sa.to_i] = "#{pr}#{", "+uc if uc}".upcase
