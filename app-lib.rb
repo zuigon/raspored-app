@@ -89,7 +89,13 @@ def boja(s, i, p="") # dan, sat, txt
   nil
 end
 
+def d(t)
+  puts "DEBUG: #{t}"
+end
+
 def ras_html(tj, var=nil) #tj: [0:]
+  # d "ras_html(#{tj.inspect}, #{var.inspect})"
+  # d "@r = #{@r.inspect}"
   @tj = tj
   @dani = %w(pon uto sri cet pet sub ned)
 
@@ -175,12 +181,14 @@ def ras_html_json(tj, var=nil) #tj: [0:]
 end
 
 def get_ras_tj(raz, tj)
+  # ts
   @r = options.r[raz] rescue (return nil)
   ras = {}
   %w(pon uto sri cet pet).each {|s|
     ras[s] = @r[s].sort{|a,b| (smjena(DateTime.now+tj*7)==0) ? (b[0]<=>a[0]) : (a[0]<=>b[0]) }.
     inject({}){|h, (k, v)| h[k]=(v.nil?) ? "--" : v.upcase; h}
   }
+  # tg "get_ras_tj()"
   ras
 end
 
@@ -193,11 +201,17 @@ def ozn?(predmet, eventi_d) # oznaci sat u danu ako je u eventima tog dana
 end
 
 def razd(l) # [1,2,3] -> [1, -1, 2, -1, 3]
+  ts
   for i in 0..(l.count-1)
     l.insert 1+2*i, -1
   end
+  tg "razd()"
   l[0..(l.count-2)]
 end
 
 def ts(); @TIME_x = Time.now; end
-def tg(txt=nil); puts "#{('T: '+txt+' > ' if !txt.nil?)}#{(Time.now-@TIME_x).to_f} seconds"; end
+def tg(txt=nil);
+  print "#{('T: '+txt+' > ' if !txt.nil?)}"
+  printf "%.4f", (Time.now-@TIME_x).to_f
+  print " seconds\n"
+end
