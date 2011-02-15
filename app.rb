@@ -230,12 +230,15 @@ __END__
 %pre
   - dani = %w(pon uto sri cet pet)
   - tjs = [ras_html_json(0, @var), ras_html_json(1, @var)]
-  - o = {"razred"=>nil, "raspored"=>{"tjedni"=>{}}}
+  - o = {"razred"=>nil, "raspored"=>{"tjedni"=>{}, "eventi"=>[]}}
   - o["razred"] = raz @str
   - for tj in 0..(tjs.count-1)
+    - o["raspored"]["tjedni"][tj] = []
     - for dan in dani
-      - o["raspored"]["tjedni"][tj] = {}
-      - o["raspored"]["tjedni"][tj][dan] = tjs[tj]["ras"][dan].sort.collect{|x| "#{x[0]}. #{x[1]}" }.join(", ")
+      - x = tjs[tj]["ras"][dan]
+      - o["raspored"]["tjedni"][tj] << x.collect{|x| "#{x[0]}. #{x[1]}" }.join(", ")
+  - for i in 0..(tjs.count-1)
+    - o["raspored"]["eventi"] << tjs[i]["events"]
 
   = JSON.pretty_generate JSON.load o.to_json
 
