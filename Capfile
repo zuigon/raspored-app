@@ -18,7 +18,8 @@ set :admin_runner, user
 
 namespace :deploy do
   task :start, :roles => [:web, :app] do
-    run "cd #{deploy_to}/current && nohup thin -C production_config.yml start"
+    run "cd #{deploy_to}/current && nohup thin -C production_config.yml -R app.rb start"
+    run "X=`ps -ef | grep raspored/current/caldaemon.sh | grep -v grep | awk '{print $2}'` && if [ $X ]; then kill $X; fi"
     run "cd #{deploy_to}/current && nohup #{deploy_to}/current/caldaemon.sh >/dev/null 2>&1 &"
   end
 
