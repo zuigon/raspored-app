@@ -8,6 +8,10 @@ require "sati-lib"
 require "app-lib"
 require "json"
 
+log = File.new("app.log", "a")
+STDOUT.reopen(log)
+STDERR.reopen(log)
+
 POC_DATUM = ["6.9.2010", 0]
 CAL_URL = "file://./basic.ics"
 DEF_GEN = "2009" # default razredi
