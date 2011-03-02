@@ -19,7 +19,7 @@ set :admin_runner, user
 namespace :deploy do
   task :start, :roles => [:web, :app] do
     run "cd #{deploy_to}/current && nohup thin -C production_config.yml start"
-    run "cd #{deploy_to}/current && nohup bash #{deploy_to}/caldaemon.sh"
+    run "cd #{deploy_to}/current && nohup bash #{deploy_to}/current/caldaemon.sh"
   end
 
   task :stop, :roles => [:web, :app] do
