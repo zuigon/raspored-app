@@ -135,7 +135,7 @@ def ras_html(tj, var=nil) #tj: [0:]
         (x.start_time.to_datetime >= (pdt+7*@tj)) &&
         (x.start_time.to_datetime <= (pdt+5+7*@tj))
   })
-  @dani.first(5).each{|d| @eventi[d].sort!}
+  @dani.first(5).each{|d| @eventi[d].sort!{|a,b| (a[0]<=>b[0]) }}
 
   haml :ras_tbl, :layout => false
 end
