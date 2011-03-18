@@ -128,7 +128,7 @@ def ras_html(tj, var=nil) #tj: [0:]
   pdt = prvi_dan_tj
   @eventi = {};
   @dani.first(5).each{|x| @eventi[x]=[]}
-  ((@g.past_events+@g.future_events).
+  (@g.events.
   collect{|x|
     @eventi[@dani[x.start_time.strftime("%w").to_i-1]] <<
       [x.summary, x.description] if
@@ -167,8 +167,7 @@ def ras_html_json(tj, var=nil) #tj: [0:]
   pdt = prvi_dan_tj
   @eventi = {};
   @dani.first(5).each{|x| @eventi[x]=[]}
-  ((@g.past_events+@g.future_events).
-  collect{|x|
+  (@g.events.collect{|x|
     @eventi[@dani[x.start_time.strftime("%w").to_i-1]] <<
       [x.summary, x.description.nil? ? nil : x.description.empty? ? nil : x.description] if
         (x.start_time.to_datetime >= (pdt+7*@tj)) &&
