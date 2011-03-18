@@ -3,9 +3,9 @@ require "sinatra"
 require "yaml"
 require "time"
 require "redis"
-require "gcal-lib"
-require "sati-lib"
-require "app-lib"
+require "./gcal-lib"
+require "./sati-lib"
+require "./app-lib"
 require "json"
 
 # log = File.new("app.log", "a")
@@ -42,13 +42,13 @@ get '/' do
   haml :razredi
 end
 
-get '/raz/:x' do |x|
-  if x =~ /^2009_/
-    redirect "/#{x[/2009_(.+)/,1]}"
-  else
-    redirect "/#{x}"
-  end
-end
+# get '/raz/:x' do |x|
+#   if x =~ /^2009_/
+#     redirect "/#{x[/2009_(.+)/,1]}"
+#   else
+#     redirect "/#{x}"
+#   end
+# end
 
 # /a ili /2009_a
 [%r{^/([a-z])\/?$}, %r{^/([\d]{2}?\d\d_[a-z])\/?$}].each do |path|
@@ -125,11 +125,6 @@ post '/raz/:str/prijedlog' do |str|
   redirect "/raz/#{str}"
 end
 
-get '/rr' do
-  out = `./get-cal.sh`
-  "<pre>#{out}</pre>"
-end
-
 get '/raz/:str/tj/:tj' do |str, tj|
   error 404 if ! str =~ /^\d\d\d\d_\d+$/
   error 404 if ! tj =~ /\d+/ && tj.to_i >= 0 && tj.to_i <= 50
@@ -178,13 +173,15 @@ __END__
         - x = @ras[s][idx]
         - klase = []
         - klase << boja(s, i, x)
-        - klase << "ozn" if !x.nil? && ozn?(x[/(\w+)/,1], @eventi[s].collect{|e| e[0]})
+        - if !x.nil? && oz=ozn?(x[/(\w+)/,1], @eventi[s].collect{|e| e[0]})
+          - klase << "ozn#{oz}" if oz
         - if @tj == 0
           - t = (koji_sat?(Time.now) || [0, 0])
           - sada=nil; sada = (t[1] rescue nil) if @dani[(DateTime.now.strftime("%w").to_i-1)%7] == s && t[0]==(smjena(DateTime.now)+1)
           - klase << "tek_sat" if sada==i
           - klase << ((@dani[(DateTime.now.strftime("%w").to_i-1)%7] == s) ? "danas" : "")
         %td{:class=>klase.join(' ')}= (x =~ /\, /) ? "#{x.gsub(/\, /, ' (')})" : x if !x.nil?
+
 
 @@razredi
 %center
@@ -199,16 +196,14 @@ __END__
             %li
               %a{:href=>"/#{r}"}= raz r
 
+
 @@test
 %pre= wrap_text(razredi(@r).inspect)
 %h1 Raspored
 
+
 @@razred
 %h1= "Razred: #{raz @str}"
-
-/ %select{:name=>"varijanta", :onchange=>"alert(this.options[this.selectedIndex].value);"}
-/   - for v in @vars
-/     %option{:selected=>(v==var)?true:nil}= v.upcase
 
 %span{:style=>"font-size: 1.3em; font-weight: bold; margin-right: 10px;"} Varijante:
 %span#varijante
@@ -218,8 +213,6 @@ __END__
 %div#rasporedi
   %div#tj0= ras_html(0, @var)
   %div#tj1= ras_html(1, @var)
-
-/ %a{:href=>"#", :onclick=>"$('div#rasporedi').load('/ras/#{@str}/tj/2');"} Jos tjedana
 
 %div.cb
 
@@ -267,6 +260,7 @@ form{:action=>"/raz/#{@str}/prijedlog", :method=>"post"}
     %textarea{:name=>"opis", :rows=>5, :cols=>30}
   %p
     %input{:type=>"submit", :value=>"Salji"}
+
 
 @@layout
 !!! Transitional

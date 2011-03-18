@@ -193,8 +193,10 @@ end
 
 def ozn?(predmet, eventi_d) # oznaci sat u danu ako je u eventima tog dana
   eventi_d.compact.each{|e|
-    return true if !predmet.nil? &&
-      (e[/(\w+) /,1].downcase rescue "") == predmet.downcase
+    return "1" if !predmet.nil? &&
+          (e[/^(\w+) /,1].downcase rescue "") == predmet.downcase
+    # return "_dz" if e =~ / dz$/i
+    # puts "_dz: #{e}" if e =~ / dz$/i
   }
   false
 end

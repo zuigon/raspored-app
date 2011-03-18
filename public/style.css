@@ -15,7 +15,8 @@ table#tbl_ras tr td .sati { margin-right: 20px; }
 .help { color: gray; text-decoration: italic; margin-left: 5px; }
 .danas { background-color: lightblue; }
 .tek_sat { color: red; }
-.ozn { background-color: #FFCC00; }
+.ozn1 { background-color: #FFCC00; }
+.ozn_dz { background-color: red; }
 .highlight { background-color: #BFEFFF; }
 ul.svi_razredi { width: 200px; position: relative; }
 ul.svi_razredi li { padding: 10px 0; font-size: 200%; }
