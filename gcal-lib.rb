@@ -99,7 +99,8 @@ module CalendarReader
             :updated_at => Time.gcalschema(e['LAST-MODIFIED']),
             :summary => e['SUMMARY'],
             :description => e['DESCRIPTION'],
-            :recurrance_rule => e['RRULE']
+            :recurrance_rule => e['RRULE'],
+            :uid => e['UID']
           ), false) # (disable sorting until done)
           @events.reject! {|e| e.start_time.nil?}
           @events.sort! {|a,b| a.start_time <=> b.start_time }
@@ -148,7 +149,7 @@ module CalendarReader
     end
 
     class Event
-      attr_accessor :start_time, :end_time, :location, :created_at, :updated_at, :summary, :description, :recurrance_rule
+      attr_accessor :start_time, :end_time, :location, :created_at, :updated_at, :summary, :description, :recurrance_rule, :uid
       def initialize(attributes={})
         attributes.each do |key, value|
           self.send("#{key.to_s}=", value)
