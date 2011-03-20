@@ -164,12 +164,12 @@ __END__
           - for x in @eventi[@dani[i-1]]
             - hd = (!x[1].nil? && !x[1].empty?)
             %li{:class=>"gcal_event_li#{hd ? " hasdesc" : ""}", :title=>(hd ? x[1].split("\n").join("; ") : nil)}= "#{hd ? "+" : "-"} #{x.first}"
-  - s = smjena(DateTime.now+@tj*7)
+  - smj = smjena(DateTime.now+@tj*7)
   - for i in 0..8
     %tr
       %td{:class=>"gray"}= "#{i}."
       - for s in @dani.first(5)
-        - idx = s==0 ? i : 8-i
+        - idx = smj==0 ? i : 8-i
         - x = @ras[s][idx]
         - klase = []
         - klase << boja(s, i, x)
