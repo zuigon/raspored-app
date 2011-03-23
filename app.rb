@@ -276,6 +276,16 @@ form{:action=>"/raz/#{@str}/prijedlog", :method=>"post"}
     / = "function getras(var n){$.get(\"/ras/\"+tj+\"/tj/2\");\",function(data){$(\"#rasporedi\").append(data));});} }"
     %script{:type => "text/javascript"}
       = '$(function(){$("table#tbl_ras tr td, table#tbl_ras th.events_l").hover(function(){$(this).addClass("highlight");},function(){$(this).removeClass("highlight");})})'
+    / Google Analytics
+    %script{:type => "text/javascript"}
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-22251152-1']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript';   ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0];   s.parentNode.insertBefore(ga, s);
+      })();
   %body
     %div{:id=>"container"}
       - if (!!(request.referer.match(/http:\/\/raz(red)?.bkrsta.co.cc\/.+/)[0] rescue false))
